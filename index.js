@@ -693,6 +693,7 @@ let commands = [
   {
     look: lookThusly,
     go: goDir,
+    goto: goDir,
     take: takeItem,
     get: takeItem,
     use: useItem,
@@ -970,11 +971,11 @@ let enterRoom = (id) => {
     println(`${getName(room.name)}`, 'room-name');
   }
 
-  if (room.visits === 0) {
+  if (!room.visits) {
     println(room.desc);
   }
 
-  room.visits++;
+  room.visits = (room.visits || 0) + 1;
 
   disk.roomId = id;
 
@@ -1072,12 +1073,77 @@ let endConversation = () => {
   disk.conversation = undefined;
 };
 
+
+const loadScript = (url, onLoad, onError) => {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = url;
+  script.id = url;
+
+  // Execute a callback function after the script is loaded
+  script.onload = onLoad;
+  script.onerror = onError;
+
+  // Append the script to the <head> or <body> of the document
+  document.head.appendChild(script);
+}
+
+const roomRegistry = {};
+const registerRoom = room => {
+  roomRegistry[room.id] = room;
+}
+
+const loadRoomFile = (setting, roomID, callback) => {
+  const url = `rooms/${setting}/${roomID}`;
+  loadScript(
+    url,
+    () => {
+      console.log(`room loaded successfully: ${roomID}`);
+      callback();
+    },
+    () => {
+      console.error(`room did not load: ${roomID}`);
+      callback();
+    }
+  );
+}
+
+const loadRooms = (disk, callback) => {
+  let loadCount = 0;
+  let loadAny = false;
+  let setting = disk.setting || '';
+  disk.rooms.forEach(room => {
+    if (typeof(room) === 'string') {
+      const roomID = room;
+      ++loadCount;
+      loadAny = true;
+      loadRoomFile(setting, roomID, () => installRoom(roomID), () => installRoom(roomID));
+    }
+  });
+  function installRoom(roomID) {
+    // find the roomID in the array
+    const index = disk.rooms.indexOf(roomID);
+    if (index != -1) {
+      // replace the roomID string with the room object
+      disk.rooms[index] = roomRegistry[roomID];
+      // remove the room object from the registery
+      delete roomRegistry[roomID];
+    }
+    if (--loadCount === 0) {
+      callback();
+    }
+  }
+  if (!loadAny) {
+    callback();
+  }
+}
+
 // load the passed disk and start the game
 // disk -> nothing
 let loadDisk = (uninitializedDisk) => {
   if (uninitializedDisk) {
     diskFactory = uninitializedDisk;
-    // start listening for user input
+    // create event lister for user input
     setup();
   }
 
@@ -1085,11 +1151,13 @@ let loadDisk = (uninitializedDisk) => {
   // (although we expect the disk to be a factory function, we still support the old object format)
   disk = init(typeof diskFactory === 'function' ? diskFactory() : diskFactory);
 
-  // start the game
-  enterRoom(disk.roomId);
+  loadRooms(disk, () => {
+    // start the game
+    enterRoom(disk.roomId);
 
-  // focus on the input
-  input.focus();
+    // focus on the input
+    input.focus();
+  })
 };
 
 // append any pending lines to the DOM each frame
