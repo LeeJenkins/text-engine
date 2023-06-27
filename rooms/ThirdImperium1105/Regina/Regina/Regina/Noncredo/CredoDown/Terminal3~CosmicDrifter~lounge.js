@@ -1,7 +1,7 @@
 
 (function() {
-  const loungeID = `Regina/Regina/Regina/Noncredo/CredoDown/Terminal3~CosmicDrifter~lounge.js`;
-  const promenadeID = `Regina/Regina/Regina/Noncredo/CredoDown/Terminal3~promenade~west.js`;
+  const loungeID = `Regina/Regina/Regina/Noncredo/CredoDown/Terminal3~CosmicDrifter~lounge`;
+  const promenadeID = `Regina/Regina/Regina/Noncredo/CredoDown/Terminal3~promenade~west`;
   registerRoom({
     id: loungeID,
     name: 'Cosmic Drifter lounge',

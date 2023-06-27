@@ -1,6 +1,8 @@
 // This simple game disk can be used as a starting point to create a new adventure.
 // Change anything you want, add new rooms, etc.
-const newDiskTemplate = () => ({
+// menu.title=Disk Template
+// menu.desc=This simple game disk can be used as a starting point to create a new adventure.
+const diskMain = () => ({
   roomId: 'start', // Set this to the ID of the room you want the player to start in.
   rooms: [
     {

@@ -1,6 +1,9 @@
 // NOTE: This game is a work in progress!
 
-const urDead = () => ({
+// menu.title=ur dead
+// menu.desc=this game is a work in progress
+
+const diskMain = () => ({
   roomId: 'title',
   todo: [{id: 0, desc: `Figure out where you are.`}],
   inventory: [

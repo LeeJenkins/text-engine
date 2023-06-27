@@ -1,15 +1,17 @@
 // This adventure is converted from The Breakout, an Amber Zone by Alegis Downport from April 21, 2021
-const theBreakout = () => ({
+// menu.title=The Breakout
+// menu.desc=An archeologist seeks your help in exploring myterious ruins deep in the jungle.
+const diskMain = () => ({
   setting: 'ThirdImperium1105',
-  roomId: 'Regina/Regina/Regina/Noncredo/CredoDown/Terminal3~CosmicDrifter~lounge.js',
+  roomId: 'Regina/Regina/Regina/Noncredo/CredoDown/Terminal3~CosmicDrifter~lounge',
   rooms: [
-    'Regina/Regina/Regina/Noncredo/CredoDown/Terminal3~CosmicDrifter~lounge.js',
-    'Regina/Regina/Regina/Noncredo/CredoDown/Terminal3~promenade~west.js',
+    'Regina/Regina/Regina/Noncredo/CredoDown/Terminal3~CosmicDrifter~lounge',
+    'Regina/Regina/Regina/Noncredo/CredoDown/Terminal3~promenade~west',
   ],
   characters: [
     {
       name: "Newton Alder",
-      roomId: `Regina/Regina/Regina/Noncredo/CredoDown/Terminal3~CosmicDrifter~lounge.js`, // "~",
+      roomId: `Regina/Regina/Regina/Noncredo/CredoDown/Terminal3~CosmicDrifter~lounge`, // "~",
       desc: "Newton Alder is a nervous-looking, nicely dressed gentleman, with short, wavy hair and goatee stubble.",
       topics: [
         'object',

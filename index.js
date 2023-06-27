@@ -945,7 +945,8 @@ let getName = name => typeof name === 'object' ? name[0] : name;
 
 // retrieve room by its ID
 // string -> room
-let getRoom = (id) => disk.rooms.find(room => room.id === id);
+let getRoom = (id) => disk.rooms.find(room => 
+  room.id === id);
 
 // remove punctuation marks from a string
 // string -> string
@@ -1094,15 +1095,20 @@ const registerRoom = room => {
 }
 
 const loadRoomFile = (setting, roomID, callback) => {
-  const url = `rooms/${setting}/${roomID}`;
+  let url = '*undefined*';
+  if (setting && setting.length) {
+    url = `rooms/${setting}/${roomID}.js`; 
+  }
+  else if (loadRoomFile.diskDir) {
+    url = `${loadRoomFile.diskDir}/rooms/${roomID}.js`;
+  }
+
   loadScript(
     url,
+    () => callback(),
     () => {
-      console.log(`room loaded successfully: ${roomID}`);
-      callback();
-    },
-    () => {
-      console.error(`room did not load: ${roomID}`);
+      println(`room did not load: ${roomID}`);
+      println(url);
       callback();
     }
   );
@@ -1149,9 +1155,11 @@ let loadDisk = (uninitializedDisk) => {
 
   // initialize the disk
   // (although we expect the disk to be a factory function, we still support the old object format)
-  disk = init(typeof diskFactory === 'function' ? diskFactory() : diskFactory);
+  let diskObject = typeof diskFactory === 'function' ? diskFactory() : diskFactory;
 
-  loadRooms(disk, () => {
+  loadRooms(diskObject, () => {
+    disk = init(diskObject);
+
     // start the game
     enterRoom(disk.roomId);
 
